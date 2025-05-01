@@ -1,5 +1,5 @@
 # pos-journal-logger
-POS Journal Logger
+# POS Journal Logger
 <details>
   <summary>Windows</summary>
   Documentation will be available soon..
