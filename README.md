@@ -1,12 +1,11 @@
 # pos-journal-logger
 POS Journal Logger
-## title {.tabset .tabset-fade}
-Testing
+<details>
+  <summary>Windows</summary>
+  Documentation will be available soon..
+</details>
 
-### tab Windows
-
-No content here yet :)
-
-### tab Linux
-
-No content here yet :)
+<details>
+  <summary>Linux</summary>
+  Documentation will be available soon..
+</details>
