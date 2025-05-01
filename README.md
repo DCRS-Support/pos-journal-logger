@@ -1,4 +1,3 @@
-# pos-journal-logger
 # POS Journal Logger
 <details>
   <summary>Windows</summary>
