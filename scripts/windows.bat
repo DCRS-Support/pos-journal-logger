@@ -22,6 +22,10 @@ REM Installing Python 3.13.3...
 
 C:\python.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 
+REM Waiting for Windows to register Python...
+
+timeout /t 10
+
 REM Downloading the POS Journal Logger Python Script...
 
 curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/pos-journal-logger/pos-journal-logger.py > C:\pos-journal-logger\scripts\pos-journal-logger.py
@@ -46,7 +50,7 @@ REM Starting the POS Journal Logger Service...
 
 python C:\pos-journal-logger\scripts\pos-journal-logger.py install
 
-Waiting for Windows service to register...
+REM Waiting for Windows service to register...
 
 timeout /t 2
 
