@@ -5,9 +5,9 @@
 </details>
 <details>
   <summary>Windows</summary>
-  1. Open cmd.exe as an Administrator.                                                                   
-  2. Copy and paste this command:                                                                   
-  curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/windows.bat > C:\windows.bat                                                                   
+  1. Open cmd.exe as an Administrator.
+  2. Copy and paste this command:
+  curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/windows.bat > C:\windows.bat
   3. Press Enter and the windows bat file to set the POS Journal Logger will download to the root of your C drive.
   4. Open File Explorer and navigate to the root of your C drive.
   5. Right click the windows.bat file and run it as Administrator.
