@@ -5,6 +5,7 @@
 </details>
 <details>
   <summary>Windows</summary>
+  
   1. Open cmd.exe as an Administrator.
   
   2. Copy and paste this command:
