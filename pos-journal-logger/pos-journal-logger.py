@@ -8,7 +8,7 @@ import time
 import platform
 import sys
 
-LOG_DIR = "C:/pos-journal-logger"
+LOG_DIR = "C:/pos-journal-logger/logs"
 ARCHIVE_DIR = os.path.join(LOG_DIR, "archive")
 PORT = 9100
 
