@@ -45,3 +45,15 @@ python C:\pos-journal-logger\scripts\pos-journal-logger.py install
 REM Starting the POS Journal Logger Service...
 
 python C:\pos-journal-logger\scripts\pos-journal-logger.py install
+
+Waiting for Windows service to register...
+
+timeout /t 2
+
+REM Setting the POS Journal Logger service to be an Automatic service...
+
+sc.exe config pos-journal-logger start= auto
+
+REM Rebooting to ensure service starts up automatically...
+
+shutdown /r /t 0
