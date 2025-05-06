@@ -8,7 +8,12 @@ import time
 import platform
 import sys
 
-LOG_DIR = "C:/pos-journal-logger/logs"
+if platform.system() == "Windows":
+    BASE_DIR = "C:/pos-journal-logger"
+else:
+    BASE_DIR = "/pos-journal-logger"
+
+LOG_DIR = os.path.join(BASE_DIR, "logs")
 ARCHIVE_DIR = os.path.join(LOG_DIR, "archive")
 PORT = 9100
 
