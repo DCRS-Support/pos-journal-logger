@@ -42,6 +42,8 @@ REM Installing the PyWin32 Package that can run Python scripts as a Windows serv
 
 pip install pywin32
 
+timeout /t 10
+
 REM Register the POS Journal Logger Python Script as a Windows Service...
 
 python C:\pos-journal-logger\scripts\pos-journal-logger.py install
@@ -58,6 +60,6 @@ REM Setting the POS Journal Logger service to be an Automatic service...
 
 sc.exe config pos-journal-logger start= auto
 
-REM Rebooting to ensure service starts up automatically...
+REM Rebooting/Renaming PC to ensure service starts up automatically...
 
-shutdown /r /t 0
+Rename-Computer -NewName "pos-journal-logger" -Restart
