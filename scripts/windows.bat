@@ -16,27 +16,27 @@ choco install curl --force -y
 
 REM Downloading Python 3.13.3...
 
-curl -L https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe > C:\python.exe
+curl -o "C:\python.exe" "https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
 
 REM Installing Python 3.13.3...
 
 C:\python.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 
-REM Waiting for Windows to register Python...
+REM Waiting for Windows to register Python environment variables...
 
 timeout /t 10
 
 REM Downloading the POS Journal Logger Python Script...
 
-curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/pos-journal-logger/pos-journal-logger.py > C:\pos-journal-logger\scripts\pos-journal-logger.py
+curl -o "C:\pos-journal-logger\scripts\pos-journal-logger.py" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/pos-journal-logger/pos-journal-logger.py"
 
 REM Downloading the Restart POS Journal Logger bat file to restart the service from the Desktop...
 
-curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.bat > C:\pos-journal-logger\scripts\restart-journal-logger.bat
+curl -o "C:\pos-journal-logger\scripts\restart-journal-logger.bat" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.bat"
 
 REM Downloading the Restart POS Journal Logger shortcut and putting it in the Public Desktop Folder...
 
-curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.lnk > C:\Users\Public\Desktop\restart-journal-logger.lnk
+curl -o "C:\Users\Public\Desktop\restart-journal-logger.lnk" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.lnk"
 
 REM Installing the PyWin32 Package that can run Python scripts as a Windows service...
 
