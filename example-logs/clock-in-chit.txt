@@ -1,0 +1,18 @@
+========================================
+--- New Print Job [09:00:06] ---
+             Your Business
+              Your Address
+        Your Address City, Zip Code
+
+Clock In
+
+Run At: 05/16/2025 11:00:09
+Name: Test Manager
+Job: Gen. Manager
+
+Time In           Time Out           Total
+----------------  ----------------  ------
+05/14/2025 12:06  05/14/2025 23:32   11.43
+05/16/2025 11:00  Clocked In           N/A
+----------------------------------  ------
+Grand Total                          11.43
