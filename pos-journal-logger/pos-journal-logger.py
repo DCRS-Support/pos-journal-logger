@@ -10,12 +10,12 @@ import time
 import platform
 import sys
 
-# If function for linking the correct director if this is a Windows Operating System
+# If statement for linking the correct director if this is a Windows Operating System
 
 if platform.system() == "Windows":
     BASE_DIR = "C:/pos-journal-logger"
 
-# Else function for linking the correct directory if this is a Linux Operating System
+# Else statement for linking the correct directory if this is a Linux Operating System
 
 else:
     BASE_DIR = "/pos-journal-logger"
