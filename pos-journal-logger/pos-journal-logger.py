@@ -20,9 +20,9 @@ PORT = 9100
 # Workstation IP Addresses for primary and backup printers
 
 PRINTER_MAP = {
-    "192.168.1.79": {
-        "primary": "192.168.1.220",
-        "fallback": "192.168.1.221"
+    "192.168.100.23": {
+        "primary": "192.168.100.202",
+        "fallback": "192.168.100.221"
     },
     "192.168.1.14": {
         "primary": "192.168.1.230",
@@ -33,7 +33,7 @@ PRINTER_MAP = {
 # If for any reason a name is not specified, it will export as (workstation ip.txt)
 
 WORKSTATION_NAMES = {
-    "192.168.1.79": "PCWS01",
+    "192.168.100.23": "PCWS01",
     "192.168.1.14": "PCWS02",
 }
 
@@ -48,15 +48,39 @@ def strip_escpos(data: bytes) -> str:
     clean = re.sub(rb'\x1d.', b'', clean)
     clean = re.sub(rb'\x10\x04[\x01-\x04]', b'', clean)
     clean = re.sub(rb'[^\x09\x0A\x20-\x7E]', b'', clean)
-    clean = re.sub(rb'\n1(?=Scan with phone camera to pay)', b'\n', clean)
-    clean = re.sub(rb'\(k1[A-Z0-9]*', b'', clean)
-    clean = re.sub(rb'\(kC\d+P0', b'', clean)
-    clean = re.sub(rb'\(k1Q0', b'', clean)
-    clean = re.sub(rb'0[*!0][^P]+Please scan the code to pay', b'Please scan the code to pay', clean)
-    clean = re.sub(rb'\n1\n(?=Total)', b'\n', clean)
-    clean = re.sub(rb'Scan with phone camera to pay\s*0', b'Scan with phone camera to pay', clean)
-    clean = re.sub(rb'k1A2k1Ck1E2kC1P0', b'', clean)
-    return clean.decode('utf-8', errors='replace')
+    # Custom binary substitutions
+    clean = re.sub(rb'k1A2k1Ck1E2k\[1P0', b'', clean)
+    clean = re.sub(rb'\nKZ800-1\n?', b'\n', clean)
+    decoded = clean.decode('utf-8', errors='replace')
+    lines = decoded.splitlines()
+    cleaned_lines = []
+    skip_next = False
+    for i, line in enumerate(lines):
+        if skip_next:
+            skip_next = False
+            continue
+        # Truncate SpotOn link and skip next gibberish line
+        if "https://order.spoton.com/pay/" in line:
+            cleaned_lines.append(line[:88])
+            if i + 1 < len(lines) and not lines[i + 1].startswith("Customer copy"):
+                skip_next = True
+            continue
+        # Remove "1" prefix from "Pay With Cash:"
+        if line.strip().startswith("1Pay With Cash:"):
+            cleaned_lines.append("Pay With Cash:" + line.strip()[16:])
+            continue
+        # Remove "1" prefix from "Scan with phone camera to pay"
+        if line.strip().startswith("1Scan with phone camera to pay"):
+            cleaned_lines.append("Scan with phone camera to pay")
+            continue
+        # Remove "0" if it directly follows the scan line
+        if i > 0 and cleaned_lines[-1].strip() == "Scan with phone camera to pay" and line.strip() == "0":
+            continue
+        # Remove lone "1" after Sales Tax
+        if i > 0 and "Sales Tax" in lines[i - 1] and line.strip() == "1":
+            continue
+        cleaned_lines.append(line[:88])
+    return '\n'.join(cleaned_lines)
 
 def send_to_printer(printer_ip, data):
     try:
@@ -71,7 +95,7 @@ def send_to_printer(printer_ip, data):
 def save_job(data, client_ip):
     now = datetime.datetime.now()
     WORKSTATION_NAMES = {
-        "192.168.1.79": "PCWS01",
+        "192.168.100.23": "PCWS01",
         "192.168.1.14": "PCWS02",
         # Add more workstation names above - this is how the journal logs are named.
     }
