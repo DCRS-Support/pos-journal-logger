@@ -62,16 +62,34 @@ PRINTER_MAP = {
         "fallback": "192.168.100.222"
     },
 }
-# Workstation Names that will be used when writing the journal logs - Ex: (PCWS01.txt)
+
+# Workstation Names that will be used when writing the journal logs - Example: (PCWS01.txt)
+
 # If for any reason a name is not specified, it will export as (workstation ip.txt)
 
 WORKSTATION_NAMES = {
+    
+# PCWS01 Workstation Name
+    
     "192.168.100.23": "PCWS01",
-    "192.168.1.14": "PCWS02",
+    
+# PCWS02 Workstation Name
+    
+    "192.168.100.24": "PCWS02",
 }
 
+
+# Function to ensure the log directory exists
+
 os.makedirs(LOG_DIR, exist_ok=True)
+
+# Function to ensure the archive directory exists
+
 os.makedirs(ARCHIVE_DIR, exist_ok=True)
+
+# The strip_escpos function uses clean to replace the extra unncessary data and output a clean log file 
+
+# This will likely need to be adjusted on a per site basis
 
 def strip_escpos(data: bytes) -> str:
     clean = data.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
@@ -115,22 +133,37 @@ def strip_escpos(data: bytes) -> str:
         cleaned_lines.append(line[:88])
     return '\n'.join(cleaned_lines)
 
+# This function defines sending to the backup printer. If it fails, it will go to the backup
+
 def send_to_printer(printer_ip, data):
     try:
         with socket.create_connection((printer_ip, PORT), timeout=3) as s:
             s.sendall(data)
         return True, ""
+
+# This depicts the error message output inside of the log for when it goes to the backup printer
+    
     except Exception as e:
         error_msg = f"[!] Failed to send to printer at {printer_ip}: {e}...going to backup"
         print(error_msg)
         return False, error_msg
 
+# This is the function used for saving the log file names and resolve it to the name of the workstation instead of an IP address
+
 def save_job(data, client_ip):
     now = datetime.datetime.now()
     WORKSTATION_NAMES = {
+        
+# Name Resolution for the IP Address of PCWS01
+        
         "192.168.100.23": "PCWS01",
+        
+# Name Resolution for the IP Address of PCWS02
+
         "192.168.1.14": "PCWS02",
-        # Add more workstation names above - this is how the journal logs are named.
+
+# Add more workstation names above - this is how the journal logs are named.
+
     }
 
     workstation_name = WORKSTATION_NAMES.get(client_ip, client_ip.replace(".", "_"))
