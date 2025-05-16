@@ -1,3 +1,5 @@
+# Libaries used for this Python project
+
 import socket
 import threading
 import datetime
@@ -8,25 +10,56 @@ import time
 import platform
 import sys
 
+# If function for linking the correct director if this is a Windows Operating System
+
 if platform.system() == "Windows":
     BASE_DIR = "C:/pos-journal-logger"
+
+# Else function for linking the correct directory if this is a Linux Operating System
+
 else:
     BASE_DIR = "/pos-journal-logger"
 
+# Log directory function for depicting where to store the logs under the pos-journal-logger directory
+
 LOG_DIR = os.path.join(BASE_DIR, "logs")
+
+# Archive directory function for depicting where to store the archived logs under the logs directory
+
 ARCHIVE_DIR = os.path.join(LOG_DIR, "archive")
+
+# Emulation running on Port 9100 so POS systems are tricked into thinking this is an Epson/POS Receipt printer
+
 PORT = 9100
 
 # Workstation IP Addresses for primary and backup printers
 
 PRINTER_MAP = {
+    
+    # PCWSO1 IP Address for redirection to main/backup printers
+    
     "192.168.100.23": {
+        
+    # PCWSO1's main receipt printer
+        
         "primary": "192.168.100.202",
+        
+    # PCWSO1's backup receipt printer
+        
         "fallback": "192.168.100.221"
     },
-    "192.168.1.14": {
-        "primary": "192.168.1.230",
-        "fallback": "192.168.1.231"
+    
+    # PCWSO2 IP Address for redirection to main/backup printers
+    
+    "192.168.100.24": {
+        
+    # PCWSO2's main receipt printer
+        
+        "primary": "192.168.100.203",
+        
+    # PCWSO2's backup receipt printer
+        
+        "fallback": "192.168.100.222"
     },
 }
 # Workstation Names that will be used when writing the journal logs - Ex: (PCWS01.txt)
