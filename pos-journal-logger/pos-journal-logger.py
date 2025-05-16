@@ -34,6 +34,8 @@ PORT = 9100
 
 # Workstation IP Addresses for primary and backup printers
 
+# Add more printers below and tie it to the IP address of the workstation
+
 PRINTER_MAP = {
     
     # PCWSO1 IP Address for redirection to main/backup printers
@@ -166,10 +168,14 @@ def save_job(data, client_ip):
 
     }
 
+# This is the function for formatting the log file name and exporting it as a text file
+
     workstation_name = WORKSTATION_NAMES.get(client_ip, client_ip.replace(".", "_"))
     filename = f"{workstation_name}.txt"
     file_path = os.path.join(LOG_DIR, filename)
-
+    
+# This is calling the strip_escpos clean function to export the log and import the New Print Job with the date and time
+    
     cleaned = strip_escpos(data)
 
     with open(file_path, "a", encoding="utf-8") as f:
@@ -178,29 +184,43 @@ def save_job(data, client_ip):
         f.write(cleaned)
         f.write("\n")
 
+# This is the function used to get the Printer Map and send it to the primary, then to the backup
+    
     mapping = PRINTER_MAP.get(client_ip)
     printed = False
-
+    
+# This is the section used to write the error if it is unable to send to the primary, it will go to the backup printer
+    
     if mapping:
         printed, error = send_to_printer(mapping['primary'], data)
         if not printed and 'fallback' in mapping:
             with open(file_path, "a", encoding="utf-8") as f:
                 f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {error}\n")
-
+                
+# This is the section used to depict that both the primary and backup printers are offline
+            
             printed, fallback_error = send_to_printer(mapping['fallback'], data)
             if not printed:
                 with open(file_path, "a", encoding="utf-8") as f:
                     f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {fallback_error}\n")
                     f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Both primary and backup printers offline.\n")
+                    
+# This is the section used to write the error 
+        
         elif not printed:
             with open(file_path, "a", encoding="utf-8") as f:
                 f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {error}\n")
                 f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Primary printer is offline.\n")
+
+# This is the section used to write the error if a printer mapping was not found for the workstation ip set in the printer map
+    
     else:
         with open(file_path, "a", encoding="utf-8") as f:
             f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] No printer mapping found for {client_ip}.\n")
 
     print(f"[✔] Saved job to {filename}")
+
+# This is the section used to write the error if a printer has been disconnected or if the connection was reset
 
 def handle_client(conn, addr):
     client_ip = addr[0]
@@ -223,6 +243,12 @@ def handle_client(conn, addr):
         if data:
             save_job(data, client_ip)
 
+# Emulation task to run on the IP address of the host machine
+
+# Example: If the machine's IP address is 192.168.100.200, 
+
+# then that will be the IP address of the dummy printer you create in your POS system to tell the Workstations/clients to print to
+
 def start_emulator(host="0.0.0.0", port=PORT):
     print(f"[LISTENING] Epson emulator listening on {host}:{port}")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -231,6 +257,8 @@ def start_emulator(host="0.0.0.0", port=PORT):
     while True:
         conn, addr = server.accept()
         threading.Thread(target=handle_client, args=(conn, addr), daemon=True).start()
+
+# Function used to move logs to the archive directory
 
 def move_logs_to_archive():
     today = datetime.datetime.now().strftime('%m-%d-%Y')
@@ -245,6 +273,10 @@ def move_logs_to_archive():
 
     print(f"[✔] Moved logs to archive folder: {today}")
 
+# Function used to check if the archive folders are older than 90 days and delete them if they are
+
+# You can increase or decrease the amount of days depending on the use case
+
 def delete_old_archives():
     now = datetime.datetime.now()
     for folder_name in os.listdir(ARCHIVE_DIR):
@@ -258,6 +290,8 @@ def delete_old_archives():
             except ValueError:
                 pass
 
+# Function used to check if it is midnight then archive all of the logs to the current date and time
+
 def check_midnight_and_archive():
     last_checked_day = None
     while True:
@@ -268,13 +302,16 @@ def check_midnight_and_archive():
             delete_old_archives()
         time.sleep(60)
 
-# Optional: Windows service support
+# Windows service support & usaged of win32 function
+
 if platform.system() == "Windows":
     try:
         import win32serviceutil
         import win32service
         import win32event
-
+        
+# Windows service name and display name
+        
         class EpsonEmulatorService(win32serviceutil.ServiceFramework):
             _svc_name_ = "pos-journal-logger"
             _svc_display_name_ = "pos-journal-logger"
@@ -305,6 +342,9 @@ if platform.system() == "Windows":
         if __name__ == '__main__':
             threading.Thread(target=check_midnight_and_archive, daemon=True).start()
             start_emulator()
+
+# Linux systemd service support
+
 else:
     # Linux / macOS
     if __name__ == '__main__':
