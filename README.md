@@ -10,7 +10,7 @@
   
   2. Copy and paste this command:
   
-  curl -L https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/windows.bat > C:\windows.bat
+  curl -o "C:\windows_p1.bat" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/windows_p1.bat"
   
   3. Press Enter and the windows bat file to will download for the POS Journal Logger.
   
