@@ -33,3 +33,7 @@ timeout /t 2
 REM Setting the POS Journal Logger service to be an Automatic service...
 
 sc.exe config pos-journal-logger start= auto
+
+REM Rebooting now...
+
+shutdown /r /t 0
