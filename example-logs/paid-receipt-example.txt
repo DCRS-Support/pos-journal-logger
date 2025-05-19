@@ -1,0 +1,30 @@
+========================================
+--- New Print Job [15:01:50] ---
+             DCRS Bar & Grill
+              2605 Metro Blvd
+        Maryland Heights, MO 63043
+
+Opened: 05/19/2025 5:01 pm
+Closed: 05/19/2025 5:01 pm
+Order: 834                        Check: 1
+Order Type: 1 Dine In
+Name: Table 1
+Server: Justin
+
+1   Wings                             0.01
+
+Subtotal                              0.01
+Sales Tax                             0.00
+
+Total                                 0.01
+
+  Visa 5679 (095910)                  0.01
+
+1Balance Due             0.00
+
+Pay With Cash:         0.00
+
+Customer copy
+
+          Pay with Cash and Save!
+We offer a 4% discount if paying with cash!
