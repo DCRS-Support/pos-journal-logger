@@ -28,4 +28,6 @@ C:\python.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 
 REM Executing Windows Part 2 Bat file...
 
-C:\windows_p2.bat
+cd "C:\"
+
+start windows_p2.bat
