@@ -1,14 +1,14 @@
 ========================================
 --- New Print Job [15:01:29] ---
-             DCRS Bar & Grill
-              2605 Metro Blvd
-        Maryland Heights, MO 63043
+             Your Business
+              Your Address
+        Your Address City, Zip Code
 
 Opened: 05/19/2025 5:01 pm
 Order: 834                        Check: 1
 Order Type: 1 Dine In
 Name: Table 1
-Server: Justin
+Server: Server 1
 
 1   Wings                             0.01
 
