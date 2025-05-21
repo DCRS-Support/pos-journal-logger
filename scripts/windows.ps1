@@ -23,6 +23,9 @@ Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.13.3/python-3.13.3-a
 # Install Python silently
 Start-Process -FilePath $pythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
 
+# Delete the Python installer after installation
+Remove-Item -Path $pythonInstaller -Force
+
 # Refresh environment to get access to Python and pip
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
 
