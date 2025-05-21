@@ -33,11 +33,11 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path", [System.Environ
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/DCRS-Support/pos-journal-logger/refs/heads/main/pos-journal-logger/pos-journal-logger.py" `
     -OutFile "C:\pos-journal-logger\scripts\pos-journal-logger.py"
 
-# Download restart helper bat file
+# Download restart pos-journal-logger bat file
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/DCRS-Support/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.bat" `
     -OutFile "C:\pos-journal-logger\scripts\restart-journal-logger.bat"
 
-# Download shortcut to public desktop
+# Download shortcut for pos-journal-logger bat file to public desktop
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/DCRS-Support/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.lnk" `
     -OutFile "C:\Users\Public\Desktop\restart-journal-logger.lnk"
 
@@ -54,6 +54,19 @@ Start-Sleep -Seconds 2
 
 # Set the service to start automatically
 Start-Process sc.exe -ArgumentList "config pos-journal-logger start= auto" -Wait
+
+# Create Inbound and Outbound Firewall Rules for Port 9100
+Write-Output "Creating inbound and outbound firewall rules for port 9100..."
+
+# Inbound rule for Port 9100
+New-NetFirewallRule -DisplayName "Inbound Rule for Port 9100" `
+    -Direction Inbound -Protocol TCP -LocalPort 9100 `
+    -Action Allow -Profile Any -Description "Allows inbound traffic on port 9100 for pos journal logger"
+
+# Outbound rule for Port 9100
+New-NetFirewallRule -DisplayName "Outbound Rule for Port 9100" `
+    -Direction Outbound -Protocol TCP -LocalPort 9100 `
+    -Action Allow -Profile Any -Description "Allows outbound traffic on port 9100 for pos journal logger"
 
 # Restart the computer
 Restart-Computer -Force
