@@ -1,63 +1,56 @@
-REM Creating directory to store POS Journal Logger...
+# Run as Administrator
 
-mkdir C:\pos-journal-logger
-mkdir C:\pos-journal-logger\logs
-mkdir C:\pos-journal-logger\scripts
+# Create directories
+New-Item -ItemType Directory -Path "C:\pos-journal-logger\logs" -Force
+New-Item -ItemType Directory -Path "C:\pos-journal-logger\scripts" -Force
 
-REM Installing Chocolately if not installed...
+# Install Chocolatey if not installed
+if (-not (Get-Command choco.exe -ErrorAction SilentlyContinue)) {
+    Write-Output "Installing Chocolatey..."
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    $env:Path += ";$env:ALLUSERSPROFILE\chocolatey\bin"
+}
 
-@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
-
-REM Installing curl if not installed...
-
+# Install curl via Chocolatey
 choco install curl --force -y
 
-REM Downloading Python 3.13.3...
+# Download Python installer
+$pythonInstaller = "C:\python.exe"
+Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe" -OutFile $pythonInstaller
 
-curl -o "C:\python.exe" "https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe"
+# Install Python silently
+Start-Process -FilePath $pythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
 
-REM Installing Python 3.13.3...
+# Refresh environment to get access to Python and pip
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
 
-C:\python.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+# Download the Python script
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/pos-journal-logger/pos-journal-logger.py" `
+    -OutFile "C:\pos-journal-logger\scripts\pos-journal-logger.py"
 
-REM Waiting for Windows to register Python environment variables...
+# Download restart helper bat file
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.bat" `
+    -OutFile "C:\pos-journal-logger\scripts\restart-journal-logger.bat"
 
-timeout /t 10
+# Download shortcut to public desktop
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.lnk" `
+    -OutFile "C:\Users\Public\Desktop\restart-journal-logger.lnk"
 
-REM Downloading the POS Journal Logger Python Script...
-
-curl -o "C:\pos-journal-logger\scripts\pos-journal-logger.py" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/pos-journal-logger/pos-journal-logger.py"
-
-REM Downloading the Restart POS Journal Logger bat file to restart the service from the Desktop...
-
-curl -o "C:\pos-journal-logger\scripts\restart-journal-logger.bat" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.bat"
-
-REM Downloading the Restart POS Journal Logger shortcut and putting it in the Public Desktop Folder...
-
-curl -o "C:\Users\Public\Desktop\restart-journal-logger.lnk" "https://raw.githubusercontent.com/CalebBrendel/pos-journal-logger/refs/heads/main/scripts/restart-journal-logger.lnk"
-
-REM Installing the PyWin32 Package that can run Python scripts as a Windows service...
-
+# Install pywin32
 pip install pywin32
 
-timeout /t 10
+Start-Sleep -Seconds 10
 
-REM Register the POS Journal Logger Python Script as a Windows Service...
+# Register the Python script as a Windows service
+python "C:\pos-journal-logger\scripts\pos-journal-logger.py" install
 
-python C:\pos-journal-logger\scripts\pos-journal-logger.py install
+# Wait for service registration
+Start-Sleep -Seconds 2
 
-REM Starting the POS Journal Logger Service...
+# Set the service to start automatically
+Start-Process sc.exe -ArgumentList "config pos-journal-logger start= auto" -Wait
 
-python C:\pos-journal-logger\scripts\pos-journal-logger.py install
-
-REM Waiting for Windows service to register...
-
-timeout /t 2
-
-REM Setting the POS Journal Logger service to be an Automatic service...
-
-sc.exe config pos-journal-logger start= auto
-
-REM Rebooting/Renaming PC to ensure service starts up automatically...
-
-Rename-Computer -NewName "pos-journal-logger" -Restart
+# Restart the computer
+Restart-Computer -Force
