@@ -6,17 +6,13 @@
 <details>
   <summary>Windows</summary>
   
-  1. Open cmd.exe as an Administrator.
+  1. Open Powershell/Terminal as an Administrator.
   
   2. Copy and paste this command:
   
-  curl -o "C:\windows_p1.bat" "https://raw.githubusercontent.com/DCRS-Support/pos-journal-logger/refs/heads/main/scripts/windows_p1.bat"
+  irm https://raw.githubusercontent.com/DCRS-Support/pos-journal-logger/refs/heads/main/scripts/windows.ps1 | iex
   
-  3. Press Enter and the windows bat file to will download for the POS Journal Logger.
-  
-  4. Open File Explorer and navigate to the root of your C drive.
-  
-  5. Right click the windows.bat file and run it as Administrator.
+  3. The server/computer this is installed on will reboot at the end then you can test!
   
 </details>
 
